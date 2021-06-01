@@ -1,5 +1,5 @@
 # nbrshell
-Set of "cell magic" functions to remotely execute shell script typed in Jupyter Notebook cell.   
+Set of Jupyter Notebook "cell magic" functions to remotely execute shell script typed in a notebook cell.   
 Shell output is streaming back to the notebook.   
 Each "cell magic" function has non-magic equivalent with name ending with "_fn"
 
