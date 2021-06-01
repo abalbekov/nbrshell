@@ -25,3 +25,8 @@ Package structure :
 
     └── nbrshell_common          │--> common functions and variables.
         └── set_psw                   └--> sets password in memory for use in subsequent executions.
+
+---
+
+## Usage examples:
+	TBD...
