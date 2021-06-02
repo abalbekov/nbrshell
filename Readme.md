@@ -66,7 +66,7 @@ echo "---------------------------"
 echo '\{Curly braces\} need to be escaped to prevent Jupyter variable substitution'
 ```
 
-Produces output :
+Produces streaming output in Jupyter cell :
 
 ```text
 Running ping:
@@ -101,13 +101,15 @@ escaping curly braces :
 ---
 
 - #### To run SQLPLUS commands on ORACLE_SID=ORCL on a remote server:
+Here password is set with `set_psw()` to let you run multiple cells without specifying the password every time.   
+Password can also be hidden with `getpass` module.
 
 ```python
 from nbrshell import pbrun_as_oracle, set_psw
 set_psw('password')
 ```
 ```shell
-%%pbrun_as_oracle user@host oracle_sid='ORCL1'
+%%pbrun_as_oracle user@host oracle_sid='ORCL'
 
 echo "select sysdate from dual;" | sqlplus -s / as sysdba
 
@@ -116,7 +118,9 @@ sqlplus / as sysdba @/dev/stdin <<-EOF
     select 'aaa' from v\$instance;
 EOF
 ```
-Produces output :
+
+Produces streaming output in Jupyter cell :
+
 ```text
 SYSDATE
 ---------
