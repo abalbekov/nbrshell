@@ -26,15 +26,24 @@ Package structure :
 
 """
 
-from .pbrun_as             import pbrun_as
+# import notebook "magic" functions only when I_Python exists.
+# check if ipython is available
+try:
+    get_ipython
+except NameError:
+    # Not in scope! Do not import.
+    pass
+else:
+    # In scope - import.
+    from .pbrun_as             import pbrun_as
+    from .pbrun_as_oracle      import pbrun_as_oracle
+    from .exec_shell_script    import exec_shell_script
+    from .nbrshell_common      import set_psw
+    
 from .pbrun_as_fn          import pbrun_as_fn
-
-from .pbrun_as_oracle      import pbrun_as_oracle
 from .pbrun_as_oracle_fn   import pbrun_as_oracle_fn
-
-from .exec_shell_script    import exec_shell_script
 from .exec_shell_script_fn import exec_shell_script_fn
 
-from .nbrshell_common      import set_psw
+
 
 

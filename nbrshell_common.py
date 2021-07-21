@@ -64,8 +64,8 @@ def _add_oracle_env_variables(script, oracle_sid):
     """
         add Oracle environment setup to script
     """
-    script1= (f"newgrp oinstall\n"
-              f"export ORACLE_SID={oracle_sid}\n"
+    #script1= (f"newgrp oinstall\n"
+    script1= (f"export ORACLE_SID={oracle_sid}\n"
               f'if [[ `uname -s` == "Linux" ]]\n'
               f"  then ORATAB=/etc/oratab\n"
               f'elif [[ `uname -s` == "SunOS" ]]\n'
