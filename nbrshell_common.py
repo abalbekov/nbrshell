@@ -43,21 +43,25 @@ def _parse_str_as_parameters(line):
             host = conn.split('@')[1]
         else:
             raise Exception('Error! First line magic parameter should be in the form of user@host')
-
+            
+        #print(conn, user, host, psw, kwargs)
         return conn, user, host, psw, kwargs
    
     #
     # convert line from space-delimeted into comma-delimeted to mimic Python function parameter list
     #
     word_lst=line.split()
+    #print(word_lst)
     # first argument is connection; surround it with quotes to make it a string parameter
     word_lst[0]='"' + word_lst[0] + '"'
     args_str=",".join(word_lst)
+    #print(args_str)
     
     #
     # parse as parameters 
     #
     parse_call_str="_line_to_parameters(" + args_str + ")"
+    #print(parse_call_str)
     return eval(parse_call_str)
     
 def _add_oracle_env_variables(script, oracle_sid):
