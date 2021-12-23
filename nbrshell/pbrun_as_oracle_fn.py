@@ -33,7 +33,7 @@ def pbrun_as_oracle_fn(conn, psw="dummy", oracle_sid="dummy", debug=False, scrip
     script2=cmn._substitute_single_quote(script1)
        
     # form pbrun script 
-    cmd=f"echo '{script2}' | pbrun su oracle -c 'bash -s'"
+    cmd=f"cd /tmp; echo '{script2}' | pbrun su oracle -c 'bash -s'"
         # alternative form:
         #       cmd=(f"pbrun -u oracle bash -s <<-EOF\n"
         #            f"{script2}\n"

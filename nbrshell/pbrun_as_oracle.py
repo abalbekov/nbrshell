@@ -79,7 +79,7 @@ def pbrun_as_oracle(line, script):
               Therefore if any curly brace is part of the shell script, it needs to be backslash escaped.
               
             - single quotes. This is necessary because the script is sent for remote execution using below construct:
-                    "echo '{script}' | pbrun su {pbrun_user} -c 'bash -s'"
+                    "cd /tmp; echo '{script}' | pbrun su {pbrun_user} -c 'bash -s'"
               Single quotes inside "script" are substituted with "quote-bakslash-quote-quote" sequence.
               Example: "echo 'aaa'" becomes "echo '\''aaa'\''"
     """
@@ -105,7 +105,7 @@ def pbrun_as_oracle(line, script):
     script3 = cmn._substitute_single_quote(script2)
     
     # form pbrun script 
-    cmd=f"echo '{script3}' | pbrun su oracle -c 'bash -s'"
+    cmd=f"cd /tmp; echo '{script3}' | pbrun su oracle -c 'bash -s'"
         # alternatively:
         #   cmd=f"echo $'{script3}' | pbrun -u oracle bash -s"
         #       -- this sets uid to oracle, but not group

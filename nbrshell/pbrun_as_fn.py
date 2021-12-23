@@ -30,7 +30,7 @@ def pbrun_as_fn(conn, psw="dummy", pbrun_user="", debug=False, script="", stderr
     script1=cmn._substitute_single_quote(script)
        
     # form pbrun script 
-    cmd=f"echo '{script1}' | pbrun su {pbrun_user} -c 'bash -s'"
+    cmd=f"cd /tmp; echo '{script1}' | pbrun su {pbrun_user} -c 'bash -s'"
         # alternative form:
         #       cmd=(f"pbrun -u {pbrun_user} bash -s <<-EOF\n"
         #            f"{script1}\n"

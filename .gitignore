@@ -1,3 +1,5 @@
 __pycache__/
 .git/
 add_to_github.log
+build/
+nbrshell.egg-info/
