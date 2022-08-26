@@ -1,5 +1,13 @@
-
-- v1.1
+- v1.0.3 Aug 2022
+	- In addition to catching ssh connection exceptions and printing exception name, also 
+	  return string f"AuthenticationException: {e}" to let calling function handle it.
+	  Not reraising exception though, to be in line with what happens when error happens while running remote script
+	
+- v1.0.2 Feb 2022
+	- Catch paramiko ssh connection exceptions to print just exception name instead of full stack.
+	  This in particular covers wrong hostname and wrong ssh password.
+	
+- v1.0.1 Dec 2021
 	- added "cd /tmp" before sending script to pbrun, to avoid 
 		```
 		shell-init: error retrieving current directory: getcwd: cannot access parent directories: Permission denied

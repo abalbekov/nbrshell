@@ -8,6 +8,7 @@ import re
 from subprocess import Popen, PIPE, STDOUT
 
 import paramiko
+from socket import gaierror
 from time import sleep
 
 _psw=""
@@ -70,9 +71,11 @@ def _add_oracle_env_variables(script, oracle_sid):
     """
     #script1= (f"newgrp oinstall\n"
     script1= (f"export ORACLE_SID={oracle_sid}\n"
-              f'if [[ `uname -s` == "Linux" ]]\n'
+              f'if [[ "`uname -s`" == "Linux" ]]\n'
               f"  then ORATAB=/etc/oratab\n"
-              f'elif [[ `uname -s` == "SunOS" ]]\n'
+              f'elif [[ "`uname -s`" == "AIX" ]]\n'
+              f"  then ORATAB=/etc/oratab\n"
+              f'elif [[ "`uname -s`" == "SunOS" ]]\n'
               f"  then ORATAB=/var/opt/oracle/oratab\n"
               f"fi\n"
               f"export ORACLE_HOME=`cat $ORATAB | grep $ORACLE_SID | cut -d: -f2`\n"
@@ -119,9 +122,18 @@ def _remote_execute_stream_output(host, user, psw, cmd):
     #
     # establish connection
     #
+    
     ssh=paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(host, 22, user, psw)
+
+    try:
+        ssh.connect(host, 22, user, psw)
+    #except (paramiko.SSHException, gaierror) as e:
+    except (paramiko.SSHException, gaierror, TimeoutError) as e:
+        print(f"AuthenticationException: {e}")
+        ssh.close()
+        return f"AuthenticationException: {e}"
+
     #
     # execute remote_script and stream output
     #
@@ -156,7 +168,13 @@ def _remote_execute_fn (host, user, psw, cmd, stderr_after_stdout=False):
     #
     ssh=paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(host, 22, user, psw)
+    try:
+        ssh.connect(host, 22, user, psw)
+    #except (paramiko.SSHException, gaierror) as e:
+    except (paramiko.SSHException, gaierror, TimeoutError) as e:
+        print(f"AuthenticationException: {e}")
+        ssh.close()
+        return f"AuthenticationException: {e}"
     #
     # execute remote_script
     #

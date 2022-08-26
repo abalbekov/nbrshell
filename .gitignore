@@ -1,5 +1,9 @@
 __pycache__/
+build/
+dist/
+nbrshell.egg-info/
 .git/
 add_to_github.log
-build/
-nbrshell.egg-info/
+add_to_pypi.log
+Readme.html
+*.bak

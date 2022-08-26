@@ -112,7 +112,7 @@ def pbrun_as_oracle(line, script):
         #       -- on Solaris group can be set newgrp in the script
         #       -- but on Exadata with Oracle Linux newgrp does not change group
         #       -- therefore this syntax can not be used there
-        #       -- Instead "pbrun su oracle -c 'bash -s'" is used, since it sets both uid to oracle and group to oinstall
+        #       -- Instead "pbrun su - oracle 'bash -s'" is used, since it sets both uid to oracle and group to oinstall
         #
         # alternatively:
         #   cmd=(f"pbrun -u oracle bash -s <<-EOF\n"
