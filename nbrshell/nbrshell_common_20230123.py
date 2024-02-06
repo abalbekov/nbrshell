@@ -14,27 +14,7 @@ from time import sleep
 import logging
 logger = logging.getLogger(__name__)
 
-_ssh_conn=""
 _psw=""
-_oracle_sid=""
-_oracle_conn=""
-
-
-def set_sqlplus_env(ssh_conn, ssh_psw, oracle_sid, oracle_conn):
-    """
-        Public function to store sqlplus connection info in module variables.
-        
-        ssh_conn should have form 'user@host'
-        oracle_conn should be complete connection sufficient for connection to a db.
-            Example 1: oracle_conn='/ as sysdba'
-            Example 2: oracle_conn='user/psw@tnsalias'
-    """
-    global _ssh_conn, _psw, _oracle_sid, _oracle_conn
-    
-    _ssh_conn=ssh_conn
-    _psw=ssh_psw
-    _oracle_sid=oracle_sid
-    _oracle_conn=oracle_conn
 
 def set_psw(psw):
     """
@@ -44,80 +24,49 @@ def set_psw(psw):
     global _psw
     _psw=psw
 
-
 def _parse_str_as_parameters(line):
     """
         Function to interpret cell magic "line" string as Python parameters (positional and keyword) 
         separated by spaces instead of commas
     """
     
-    def _line_to_parameters(ssh_conn="dummy", ssh_psw="dummy", **kwargs):
+    def _line_to_parameters(conn, psw="dummy", **kwargs):
         """
         helper function
         """
-
-        if ssh_conn =="dummy":
-            # if no ssh connection given then take it from global
-            global _ssh_conn
-            if _ssh_conn:
-                ssh_conn=_ssh_conn
-            else:
-                raise Exception('Error! ssh_conn is not given.')
-        
-        if '@' in ssh_conn:
-            user = ssh_conn.split('@')[0]
-            host = ssh_conn.split('@')[1]
-        else:
-            raise Exception('Error! First line magic parameter should be in the form of user@host')
-
-        if ssh_psw =="dummy":
+        if psw =="dummy":
             # if password not given then take it from global
             global _psw
             if _psw:
-                ssh_psw=_psw
+                psw=_psw
             else:
-                raise Exception('Error! ssh password is not given.')
-            
-        #print(ssh_conn, user, host, ssh_psw, kwargs)
-        return ssh_conn, user, host, ssh_psw, kwargs
-   
-    
-    
-    if len(line)>0:
-    
-        #
-        # convert line from space-delimeted into comma-delimeted to mimic Python function parameter list
-        #
+                raise Exception('Error! Password is not given.')
         
-        
-        # replace spaces with commas, except when space is enclosed in single or double quotes
-        #
-        
-        # pattern finds either single quoted substring, double quoted substring, or space 
-        pat=re.compile(r'([\'][^\']*[\'])|(["][^"]*["])|\s+')
-        
-        # lambda in sub returns single/double quoted substring if it was found, otherwise returns comma
-        args_str = re.sub(pat, lambda x: x.group(1) if x.group(1) else x.group(2) if x.group(2) else ", ", line)
-        
-        #print(args_str)
-    
-        # at this point args_str is comma-delimeted
-        # first argument is connection; surround it with quotes to make it a string parameter
-        #
-        if ',' in args_str:
-            args_str = '"' + args_str[ : args_str.find(',') ] + '"' + args_str[ args_str.find(',') :]
+        if '@' in conn:
+            user = conn.split('@')[0]
+            host = conn.split('@')[1]
         else:
-            args_str = '"' + args_str + '"'
-        
-        # parse args_str as parameters 
-        #
-        parse_call_str="_line_to_parameters(" + args_str + ")"
-        #print(parse_call_str)
-        return eval(parse_call_str)
-        
-    else:
-        # parameter line was empty
-        return _line_to_parameters()
+            raise Exception('Error! First line magic parameter should be in the form of user@host')
+            
+        #print(conn, user, host, psw, kwargs)
+        return conn, user, host, psw, kwargs
+   
+    #
+    # convert line from space-delimeted into comma-delimeted to mimic Python function parameter list
+    #
+    word_lst=line.split()
+    #print(word_lst)
+    # first argument is connection; surround it with quotes to make it a string parameter
+    word_lst[0]='"' + word_lst[0] + '"'
+    args_str=",".join(word_lst)
+    #print(args_str)
+    
+    #
+    # parse as parameters 
+    #
+    parse_call_str="_line_to_parameters(" + args_str + ")"
+    #print(parse_call_str)
+    return eval(parse_call_str)
     
 def _add_oracle_env_variables(script, oracle_sid):
     """
@@ -182,8 +131,9 @@ def _remote_execute_stream_output(host, user, psw, cmd):
 
     try:
         ssh.connect(host, 22, user, psw)
-    #except (paramiko.SSHException, gaierror, TimeoutError, paramiko.ssh_exception.NoValidConnectionsError) as e:
-    except Exception as e:
+    #except (paramiko.SSHException, gaierror) as e:
+    except (paramiko.SSHException, gaierror, TimeoutError) as e:
+        #print(f"AuthenticationException: {e}")
         logger.error(f"AuthenticationException: {e}")
         ssh.close()
         return f"AuthenticationException: {e}"
@@ -191,10 +141,7 @@ def _remote_execute_stream_output(host, user, psw, cmd):
     #
     # execute remote_script and stream output
     #
-    try:
-        stdin, stdout, stderr = ssh.exec_command(cmd)
-    except Exception as e:
-        logger.error(f"Error in ssh.exec_command ! {e}")
+    stdin, stdout, stderr = ssh.exec_command(cmd)
     
     while True:
         while stdout.channel.recv_ready():
@@ -227,33 +174,25 @@ def _remote_execute_fn (host, user, psw, cmd, stderr_after_stdout=False):
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
         ssh.connect(host, 22, user, psw)
-    #except (paramiko.SSHException, gaierror, TimeoutError, paramiko.ssh_exception.NoValidConnectionsError) as e:
-    except Exception as e:
+    #except (paramiko.SSHException, gaierror) as e:
+    except (paramiko.SSHException, gaierror, TimeoutError, paramiko.ssh_exception.NoValidConnectionsError) as e:
+        #print(f"AuthenticationException: {e}")
         logger.error(f"AuthenticationException: {e}")
         ssh.close()
         return f"AuthenticationException: {e}"
     #
     # execute remote_script
     #
-    try:
-        stdin, stdout, stderr = ssh.exec_command(cmd)
-    except Exception as e:
-        logger.error(f"Error in ssh.exec_command ! {e}")       
+    stdin, stdout, stderr = ssh.exec_command(cmd)
 
     outlines=stdout.readlines()
     out=''.join(outlines)
-    logger.debug(out)
     
     errlines=stderr.readlines()
     # remove two unexplainable errors 
     err=''.join([l for l in errlines if 'shell-init: error retrieving current directory' not in l
-                                             and 'Command caught signal 15 (Terminated)' not in l
-                                             ])
-    #err=''.join([l for l in errlines ])
+                                             and 'Command caught signal 15 (Terminated)' not in l])
     ssh.close()
-    
-    if err and not stderr_after_stdout:
-        logger.error(err)
     
     if stderr_after_stdout:
         # append stderr after stdout

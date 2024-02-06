@@ -1,6 +1,7 @@
 """
-nbrshell package defines Jupyter notebook "magic" functions to remotely executes shell script typed in Jupyter notebook cell.
+nbrshell package defines Jupyter notebook "magic" functions to remotely execute shell script typed in a Jupyter notebook cell.
 Functions ending with _fn are regular non-magic function equivalents.
+
 
 Package structure :
 
@@ -20,9 +21,13 @@ Package structure :
 
     |__ exec_shell_script_ssh       |--> connects using local ssh client with previously setup ssh keys.
     |__ exec_shell_script_ssh_fn    |    Useful in cases when paramiko can not connect
+    
+    |__ pbrun_sqlplus               |--> runs cell content via sqlplus on a remote host, after connecting to the remote host with ssh, 
+                                    |    becoming oracle with pbrun and setting some common Oracle environment variables.
 
     |__ nbrshell_common             |--> common functions and variables
-        |__ set_psw                     |--> sets password in memory for use in subsequent executions
+        |__ set_psw                     |--> saves password in memory for use in subsequent executions
+        |__ set_sqlplus_env             |--> saves sqlplus environment parameters for use in subsequent executions
 
 """
 
@@ -39,6 +44,9 @@ else:
     from .pbrun_as_oracle      import pbrun_as_oracle
     from .exec_shell_script    import exec_shell_script
     from .nbrshell_common      import set_psw
+    from .pbrun_sqlplus        import pbrun_sqlplus
+    from .nbrshell_common      import set_sqlplus_env
+
     
 from .pbrun_as_fn          import pbrun_as_fn
 from .pbrun_as_oracle_fn   import pbrun_as_oracle_fn

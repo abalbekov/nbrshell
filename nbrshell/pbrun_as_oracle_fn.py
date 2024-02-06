@@ -2,6 +2,9 @@
 # import common functions
 from . import nbrshell_common as cmn
 
+import logging
+logger = logging.getLogger(__name__)
+
 def pbrun_as_oracle_fn(conn, psw="dummy", oracle_sid="dummy", debug=False, script="", stderr_after_stdout=False):
     """
         This is functional eqiuvalent of cell magic 'pbrun_as_oracle', with following differences:
@@ -55,6 +58,11 @@ def pbrun_as_oracle_fn(conn, psw="dummy", oracle_sid="dummy", debug=False, scrip
         print(cmd)
         print("========= script-end =============")
         
+    logger.debug(f"Executing script on {conn}:")
+    logger.debug("======== script-start ============")
+    logger.debug(cmd)
+    logger.debug("========= script-end =============")
+
     # remote execute and return output
     return cmn._remote_execute_fn (host, user, psw, cmd, stderr_after_stdout)
 

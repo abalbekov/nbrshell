@@ -1,3 +1,10 @@
+- v1.0.5 Jan 2023
+	- catch all exceptions in paramiko in ssh.connect and ssh.exec_command and print to logger
+	
+- v1.0.4 Sep 2022
+	- catch paramiko.ssh_exception.NoValidConnectionsError and print exception to avoid printing error stack
+	  This happens when there is no sshd on port 22 on target
+	
 - v1.0.3 Aug 2022
 	- In addition to catching ssh connection exceptions and printing exception name, also 
 	  return string f"AuthenticationException: {e}" to let calling function handle it.

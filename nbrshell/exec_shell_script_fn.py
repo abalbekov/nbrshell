@@ -2,7 +2,11 @@
 # import common functions
 from . import nbrshell_common as cmn
 
-def exec_shell_script_fn(conn, psw="dummy", pbrun_user="", debug=False, script="", stderr_after_stdout=False):
+import logging
+logger = logging.getLogger(__name__)
+
+#def exec_shell_script_fn(conn, psw="dummy", pbrun_user="", debug=False, script="", stderr_after_stdout=False):
+def exec_shell_script_fn(conn, psw="dummy", debug=False, script="", stderr_after_stdout=False):
     """
         This is functional eqiuvalent of cell magic 'exec_shell_script', with following differences:
             - regular function with no magic decorator.
@@ -26,11 +30,14 @@ def exec_shell_script_fn(conn, psw="dummy", pbrun_user="", debug=False, script="
     user = conn.split('@')[0]
     host = conn.split('@')[1]
 
+    # add oracle env variables
+    script1=cmn._add_oracle_env_variables(script, oracle_sid='dummy')
+
     # substitute single quotes
-    script1=cmn._substitute_single_quote(script)
+    script2=cmn._substitute_single_quote(script1)
        
     # form pbrun script 
-    cmd=f"echo '{script1}' | bash -s"
+    cmd=f"echo '{script2}' | bash -s"
         # alternative form:
         #       cmd=(f"bash -s <<-EOF\n"
         #            f"{script1}\n"
@@ -52,7 +59,12 @@ def exec_shell_script_fn(conn, psw="dummy", pbrun_user="", debug=False, script="
         print(cmd)
         print("========= script-end =============")
         
+    logger.debug(f"Executing script on {conn}:")
+    logger.debug("======== script-start ============")
+    logger.debug(cmd)
+    logger.debug("========= script-end =============")
+    
+    
     # remote execute and return output
-    return cmn._remote_execute_fn (host, user, psw, cmd, stderr_after_stdout)
-
+    return cmn._remote_execute_fn (host, user, psw, cmd, stderr_after_stdout)  
     

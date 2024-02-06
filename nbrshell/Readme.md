@@ -1,4 +1,6 @@
 # nbrshell
+v1.0.4
+
 Set of Jupyter Notebook "cell magic" functions to remote execute shell script commands typed in a notebook cell.   
 Shell output is streaming back to the notebook.   
 
@@ -26,9 +28,12 @@ This package requires paramiko library, which is distributed under GNU Lesser Ge
     ├── exec_shell_script_ssh    │--> connects using local ssh client with previously setup ssh keys.
     ├── exec_shell_script_ssh_fn │    Useful in cases when paramiko will not connect.
 
-    └── nbrshell_common          │--> common functions and variables.
-        └── set_psw              |    └--> set_psw sets password in memory for use in subsequent executions.
+    └── pbrun_sqlplus            │--> runs cell content via sqlplus on a remote host, after connecting to the remote host with ssh, 
+                                 │    becoming oracle with pbrun and setting some common Oracle environment variables.
 
+    └── nbrshell_common          │--> common functions and variables.
+        └── set_psw                   └--> set_psw sets password in memory for use in subsequent executions.
+        └── set_sqlplus_env           └--> saves sqlplus environment parameters for use in subsequent executions
 ---
 
 ## Usage examples:
@@ -69,7 +74,7 @@ echo "---------------------------"
 echo '\{Curly braces\} need to be escaped to prevent Jupyter variable substitution'
 ```
 
-Produces streaming output in Jupyter cell :
+Produces following streaming output in Jupyter cell :
 
 ```text
 Running ping:
@@ -103,14 +108,15 @@ escaping curly braces :
 
 ---
 
-- #### To run SQLPLUS commands on ORACLE_SID=ORCL on a remote server:
-Here password is set with `set_psw()` to let you run multiple cells without specifying the password every time.   
-Password can also be hidden with `getpass` or `stdiomask` module .
+- #### To run SQLPLUS on a remote server:
+Here ssh password is set with `set_psw()` to let you run multiple cells without specifying the password every time.   
+Password can be hidden with `getpass` or `stdiomask` module.
 
 ```python
 from nbrshell import pbrun_as_oracle, set_psw
 set_psw('password')
 ```
+
 ```shell
 %%pbrun_as_oracle user@host oracle_sid='ORCL'
 
@@ -122,7 +128,7 @@ sqlplus / as sysdba @/dev/stdin <<-EOF
 EOF
 ```
 
-Produces streaming output in Jupyter cell :
+Produces following streaming output in Jupyter cell :
 
 ```text
 SYSDATE
@@ -148,4 +154,45 @@ aaa
 
 SQL> Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
 Version 19.10.0.0.0
+```
+
+- #### Alternative syntax to run SQLPLUS commands on a remote server:
+Here we setup sqlplus connection parameters once and then each subsequent cell uses saved parameters, 
+thus requiring less clutter on remaining notebook :
+
+
+Load remote execution function:
+
+```python
+import nbrshell as nbr
+```
+Set sqlplus environment:
+
+```python
+
+nbr.set_sqlplus_env(
+        ssh_conn='user@host',
+        ssh_psw='password',
+        oracle_sid='ORCL',
+        oracle_conn='/ as sysdba'
+)
+```
+Run sql commands in remote sqlplus:
+```sql
+%%pbrun_sqlplus
+
+	alter session set container=<pdb> ;
+    show pdbs
+	...
+	...
+```
+Run more sql commands:
+```sql
+%%pbrun_sqlplus
+
+    select sysdate from dual ;
+	select hostname from v$instance;
+	...
+	...
+
 ```
