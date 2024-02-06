@@ -1,4 +1,5 @@
 nbrshell
+v1.0.4
 =============================
 | Jupyter Notebook *"cell magic"* functions for remote executing shell script typed in a notebook cell.
 | Shell output is streaming back to the notebook.
@@ -25,6 +26,9 @@ Package functions
 +------------------------------+--------------------------------------------------------------------------------------------+
 |``exec_shell_script_ssh``     | Connects using local ssh client with previously setup ssh keys.                            |
 |(``exec_shell_script_ssh_fn``)| Useful in cases when paramiko will not connect.                                            |
++------------------------------+--------------------------------------------------------------------------------------------+
+|``pbrun_sqlplus``             | Runs cell content via sqlplus on a remote host, after connecting with ssh,                 |
+|                              | becoming oracle with pbrun and setting some common Oracle environment variables.           |
 +------------------------------+--------------------------------------------------------------------------------------------+
 |``nbrshell_common``           | Common functions and variables.                                                            |
 |``set_psw``                   | Sets password in a package memory variable for use in subsequent executions.               |
@@ -153,4 +157,49 @@ Above produces this streaming output in Jupyter cell :
 	
 	SQL> Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
 	Version 19.10.0.0.0
+
+3. Alternative syntax to run SQLPLUS commands on a remote server:
+------------------------------------------------------------------
+Here we setup sqlplus connection parameters once and then each subsequent cell uses saved parameters, 
+thus requiring less clutter on remaining notebook :
+
+Load remote execution function:
+
+.. code-block:: python
+
+	import nbrshell as nbr
+
+Set sqlplus environment:
+
+.. code-block:: python
+
+	nbr.set_sqlplus_env(
+			ssh_conn='user@host',
+			ssh_psw='password',
+			oracle_sid='ORCL',
+			oracle_conn='/ as sysdba'
+	)
+
+Run sql commands in remote sqlplus:
+
+.. code-block:: 
+
+	%%pbrun_sqlplus
+	
+		alter session set container=<pdb> ;
+		show pdbs
+		...
+		...
+
+Run more sql commands:
+
+.. code-block:: 
+
+	%%pbrun_sqlplus
+	
+		select sysdate from dual ;
+		select hostname from v$instance;
+		...
+		...
+
 
