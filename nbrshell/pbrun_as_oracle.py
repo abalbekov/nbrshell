@@ -42,6 +42,7 @@
 '''
 
 from IPython.core.magic import (register_cell_magic, needs_local_scope)
+from IPython.display import Javascript, display
 
 # import common functions
 from . import nbrshell_common as cmn
@@ -127,5 +128,10 @@ def pbrun_as_oracle(line, script):
         print(cmd)
         print("========= script-end =============")
 
+    # add html element with id="id_pbrun_as_oracle" for CSS to pick up
+    display( Javascript('element.setAttribute("id", "id_pbrun_as_oracle")') )
+    
     # remote execute
     cmn._remote_execute_stream_output(host, user, psw, cmd)
+    
+

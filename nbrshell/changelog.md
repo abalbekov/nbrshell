@@ -1,3 +1,9 @@
+- v1.0.7 Feb 2024
+	- adding pbrun_sqlplus cell magic
+	- ability to set and reuse connection parameters
+	- setting dark output background
+- v1.0.6 Feb 2024
+	- if standard error was not empty, then logger.error both standard out and standard error
 - v1.0.5 Jan 2023
 	- catch all exceptions in paramiko in ssh.connect and ssh.exec_command and print to logger
 	

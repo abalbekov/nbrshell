@@ -16,25 +16,50 @@ logger = logging.getLogger(__name__)
 
 _ssh_conn=""
 _psw=""
+_pbrun_user=""
 _oracle_sid=""
-_oracle_conn=""
+_oracle_conn="/ as sysdba"
 
 
-def set_sqlplus_env(ssh_conn, ssh_psw, oracle_sid, oracle_conn):
+#def set_sqlplus_env(ssh_conn, ssh_psw, oracle_sid, oracle_conn):
+#    """
+#        Public function to store sqlplus connection info in module variables.
+#        
+#        ssh_conn should have form 'user@host'
+#        oracle_conn should be complete connection sufficient for connection to a db.
+#            Example 1: oracle_conn='/ as sysdba'
+#            Example 2: oracle_conn='user/psw@tnsalias'
+#    """
+#    global _ssh_conn, _psw, _oracle_sid, _oracle_conn
+#    
+#    _ssh_conn=ssh_conn
+#    _psw=ssh_psw
+#    _oracle_sid=oracle_sid
+#    _oracle_conn=oracle_conn
+
+def set_nbrshell_env(ssh_conn, ssh_psw, pbrun_user=None, oracle_sid=None, oracle_conn=None):
     """
-        Public function to store sqlplus connection info in module variables.
+        Public function to store connection info in module variables.
         
         ssh_conn should have form 'user@host'
         oracle_conn should be complete connection sufficient for connection to a db.
             Example 1: oracle_conn='/ as sysdba'
             Example 2: oracle_conn='user/psw@tnsalias'
     """
-    global _ssh_conn, _psw, _oracle_sid, _oracle_conn
+    global _ssh_conn, _psw, _pbrun_user, _oracle_sid, _oracle_conn
     
     _ssh_conn=ssh_conn
     _psw=ssh_psw
-    _oracle_sid=oracle_sid
-    _oracle_conn=oracle_conn
+    
+    if pbrun_user:
+        _pbrun_user=pbrun_user
+   
+    if oracle_sid:
+        _oracle_sid=oracle_sid
+        
+    if oracle_conn:
+        _oracle_conn=oracle_conn
+
 
 def set_psw(psw):
     """
@@ -103,10 +128,10 @@ def _parse_str_as_parameters(line):
     
         # at this point args_str is comma-delimeted
         # first argument is connection; surround it with quotes to make it a string parameter
-        #
-        if ',' in args_str:
+        # But it may be a keyword, in which case do not surround.
+        if ',' in args_str and '=' not in args_str[ : args_str.find(',') ] :
             args_str = '"' + args_str[ : args_str.find(',') ] + '"' + args_str[ args_str.find(',') :]
-        else:
+        elif '=' not in args_str:
             args_str = '"' + args_str + '"'
         
         # parse args_str as parameters 
@@ -245,15 +270,17 @@ def _remote_execute_fn (host, user, psw, cmd, stderr_after_stdout=False):
     logger.debug(out)
     
     errlines=stderr.readlines()
-    # remove two unexplainable errors 
+    # remove three unexplainable errors 
     err=''.join([l for l in errlines if 'shell-init: error retrieving current directory' not in l
                                              and 'Command caught signal 15 (Terminated)' not in l
+                                             and 'Cannot access sharedlibsolarisprojects /usr/lib/libproject.so.1' not in l
                                              ])
     #err=''.join([l for l in errlines ])
     ssh.close()
     
-    if err and not stderr_after_stdout:
-        logger.error(err)
+    #if err and not stderr_after_stdout:
+    if err:
+        logger.error(out+err)
     
     if stderr_after_stdout:
         # append stderr after stdout

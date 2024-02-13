@@ -4,19 +4,19 @@ from setuptools import setup
 #
 from pathlib import Path
 this_directory = Path(__file__).parent
-long_description = (this_directory / "README.rst").read_text(encoding='utf-8')
+long_description = (this_directory / "nbrshell/Readme.md").read_text()
 
 setup(
     name="nbrshell",
-    version="1.0.4",
+    version="1.0.7",
     description='Jupyter Notebook "cell magic" functions to remotely execute shell script typed in a notebook cell.',
     long_description=long_description,
-    long_description_content_type='text/x-rst',
+    long_description_content_type='text/markdown',
     author="A.Balbekov",
     author_email="albert.y.balbekov@gmail.com",
     packages=["nbrshell"], # same as name
     install_requires=["paramiko"],    # external packages
     license="BSD License",
     url="https://github.com/abalbekov/nbrshell",
-    keywords=['remote shell script execution']
+    keywords=['remote shell script execution','remote shell','shell','sqlplus']
 )

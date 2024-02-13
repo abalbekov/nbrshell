@@ -43,6 +43,7 @@
 #
 
 from IPython.core.magic import (register_cell_magic, needs_local_scope)
+from IPython.display import Javascript, display
 
 # import common functions
 from . import nbrshell_common as cmn
@@ -85,15 +86,22 @@ def pbrun_as(line, script):
     # parse parameters
     conn, user, host, psw, kwargs = cmn._parse_str_as_parameters(line)
 
-    if 'pbrun_user' not in kwargs:
-        raise Exception("Error! Missing mandatory parameter pbrun_user.\n"
-                        'Parameter "line" should be in the form of:\n' 
-                        "user@host [psw=<password>] pbrun_user=<user2> [debug=True]")
-
-    pbrun_user = kwargs['pbrun_user']
-       
     # debug default is False
     debug = kwargs.get('debug', False)
+    
+    #if 'pbrun_user' not in kwargs:
+    #    raise Exception("Error! Missing mandatory parameter pbrun_user.\n"
+    #                    'Parameter "line" should be in the form of:\n' 
+    #                    "user@host [psw=<password>] pbrun_user=<user2> [debug=True]")
+
+    # if pbrun_user was not passed then take it from global
+    if 'pbrun_user' not in kwargs:
+        if cmn._pbrun_user:
+            pbrun_user=cmn._pbrun_user
+        else:
+            raise Exception('Error! pbrun_user is not given.')
+    else:
+        pbrun_user = kwargs['pbrun_user']
     
     #print(conn, user, host, psw, oracle_sid, debug, kwargs)
     
@@ -125,6 +133,9 @@ def pbrun_as(line, script):
         print("======== script-start ============")
         print(cmd)
         print("========= script-end =============")
+
+    # add html element with id="id_pbrun_sqlplus" for CSS to pick up
+    display( Javascript('element.setAttribute("id", "id_pbrun_as")') )
 
     # remote execute
     cmn._remote_execute_stream_output(host, user, psw, cmd)

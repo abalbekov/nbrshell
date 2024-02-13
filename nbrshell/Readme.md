@@ -1,52 +1,68 @@
 # nbrshell
-v1.0.4
+v1.0.7 Feb 2024
 
-Set of Jupyter Notebook "cell magic" functions to remote execute shell script commands typed in a notebook cell.   
-Shell output is streaming back to the notebook.   
+Set of Jupyter Notebook "cell magic" functions to execute remote shell script commands typed in a notebook cell, 
+as if they were typed in a terminal. Shell output is streaming back to the notebook.
 
-Each "cell magic" has a non-magic equivalent function with name ending with "_fn"
+This makes it possible to create a notebook with shell constructs in code cells, shell output in output cells, and freeform text in markdown cells, 
+making this a good solution for documentation purposes as well as a templating solution for repetitive executions.
 
-This package requires paramiko library, which is distributed under GNU Lesser General Public License v2.1
+Each "cell magic" has a non-magic equivalent function with name ending with "_fn".
+
+Similarly, there is also Oracle-specific "cell magic" allowing to run sqlplus commands in a remote sqlplus. 
+
+This package uses paramiko library, which is distributed under GNU Lesser General Public License v2.1
 
 ---
 
 ## Package structure :
 
-    ├── pbrun_as_oracle          │--> connects via paramiko ssh client with a password (i.e. no prior keys setup is needed)
-    ├── pbrun_as_oracle_fn       │    Then executes pbrun to switch to oracle account and sets oracle environment according 
-                                 |    to provided "oracle_sid", then runs provided shell commands.
+    ├── pbrun_as_oracle          │──> connects via paramiko ssh client with a password (no prior ssh 
+    ├── pbrun_as_oracle_fn       │    keys setup is needed), then executes pbrun to switch to oracle account,
+                                 │    then sets oracle environment according to provided "oracle_sid"
+                                 │    and runs provided shell commands.
 
-    ├── pbrun_as                 │--> connects via paramiko ssh client with password (i.e. no prior keys setup is needed)
-    ├── pbrun_as_fn              │    Then executes pbrun to switch to another user, provided as a parameter.
-                                 |    Then runs provided shell commands.
+    ├── pbrun_as                 │──> connects via paramiko ssh client with password (no prior ssh 
+    ├── pbrun_as_fn              │    keys setup is needed), then executes pbrun to switch to another user,
+                                 │    provided as a parameter. Then runs provided shell commands.
     
-    ├── exec_shell_script        │--> connects using paramiko ssh client. If password is provided, then connects with password
-    ├── exec_shell_script_fn     │    and no prior ssh keys setup is needed.
-                                 |    If password is not provided, then attempts to connect with ssh keys.
-                                 |    Then runs provided shell commands.
+    ├── exec_shell_script        │──> connects using paramiko ssh client. If password is provided, then 
+    ├── exec_shell_script_fn     │    connects with password and no prior ssh keys setup is needed.
+                                 │    If password is not provided, then attempts to connect with ssh keys.
+                                 │    Then runs provided shell commands.
 
-    ├── exec_shell_script_ssh    │--> connects using local ssh client with previously setup ssh keys.
+    ├── exec_shell_script_ssh    │──> connects using local ssh client with previously setup ssh keys.
     ├── exec_shell_script_ssh_fn │    Useful in cases when paramiko will not connect.
 
-    └── pbrun_sqlplus            │--> runs cell content via sqlplus on a remote host, after connecting to the remote host with ssh, 
-                                 │    becoming oracle with pbrun and setting some common Oracle environment variables.
+    └── pbrun_sqlplus            │──> runs cell content via sqlplus on a remote host, after connecting  
+                                 │    to the remote host with ssh, becoming oracle with pbrun and 
+                                 │    setting some common Oracle environment variables.
+                                    
+    └── nbrshell_common          │──> common functions and variables.
+        └── set_psw                   └──> sets password in memory for use in subsequent cell executions.
+        └── set_sqlplus_env           └──> saves sqlplus environment parameters for use in subsequent executions.
+        └── set_nbr_env               └──> saves nbr environment parameters for use in subsequent executions.
 
-    └── nbrshell_common          │--> common functions and variables.
-        └── set_psw                   └--> set_psw sets password in memory for use in subsequent executions.
-        └── set_sqlplus_env           └--> saves sqlplus environment parameters for use in subsequent executions
 ---
 
 ## Usage examples:
 
 ---
 
-- #### To run shell commands on a remote server:
+- ### To run shell commands on a remote server:
+
+First load remote execution function:
+
 ```python
-from nbrshell import exec_shell_script
+import nbrshell as nbr
+
+# define jupyter python variable:
 jupyter_var="This is a string defined in Jupyter"
 ```
+Then execute shell script on a remote server:
+
 ```shell
-%%exec_shell_script user@host psw='password'
+%%exec_shell_script user@host ssh_psw='password'
 
 echo "Running ping :"
 echo "--------------"
@@ -74,125 +90,77 @@ echo "---------------------------"
 echo '\{Curly braces\} need to be escaped to prevent Jupyter variable substitution'
 ```
 
-Produces following streaming output in Jupyter cell :
+This will stream following shell output in Jupyter output cell :
 
-```text
-Running ping:
---------------
-PING www.oracle.com: 56 data bytes
-64 bytes from a104-99-86-191.deploy.static.akamaitechnologies.com (104.99.86.191): icmp_seq=0. time=12.871 ms
-64 bytes from a104-99-86-191.deploy.static.akamaitechnologies.com (104.99.86.191): icmp_seq=1. time=12.706 ms
-64 bytes from a104-99-86-191.deploy.static.akamaitechnologies.com (104.99.86.191): icmp_seq=2. time=12.794 ms
+<div style="width: 100%;">
+    <img src="readme_svg/exec_shell_script_output.svg" style="width: 100%;" alt="Click to see the source">
+</div>
 
-----www.oracle.com PING Statistics----
-3 packets transmitted, 3 packets received, 0% packet loss
-round-trip (ms)  min/avg/max/stddev = 12.706/12.790/12.871/0.083
-Running loop:
---------------
-1
-2
-3
-4
-5
-Here document:
---------------
-    This is multiline 
-    here document
-Jupyter variable substitution:
----------------------------
-This is a string defined in Jupyter
-escaping curly braces :
----------------------------
-{Curly braces} need to be escaped to prevent Jupyter variable substitution
-```
+The ssh connection parameters can also be set once using `nbr.set_nbrshell_env()` function, in which case it will not be necessary 
+to include them in subsequent cell magic commands, thus allowing cleaner notebook.
 
 ---
 
-- #### To run SQLPLUS on a remote server:
-Here ssh password is set with `set_psw()` to let you run multiple cells without specifying the password every time.   
-Password can be hidden with `getpass` or `stdiomask` module.
+- ### To run Oracle sqlplus on a remote server
+    - #### One option is to give all connection parameters on cell command line:
 
-```python
-from nbrshell import pbrun_as_oracle, set_psw
-set_psw('password')
-```
-
-```shell
-%%pbrun_as_oracle user@host oracle_sid='ORCL'
-
-echo "select sysdate from dual;" | sqlplus -s / as sysdba
-
-sqlplus / as sysdba @/dev/stdin <<-EOF
-    set echo on
-    select 'aaa' from v\$instance;
-EOF
-```
-
-Produces following streaming output in Jupyter cell :
-
-```text
-SYSDATE
----------
-01-JUN-21
+        First load remote execution function:
+        
+        ```python
+        import nbrshell as nbr
+        ```
+    
+        Then run remote sqlplus commands with full command line options:
+        
+        ```python
+        %%pbrun_sqlplus username@hostname ssh_psw='password1' oracle_sid='ORCL1' oracle_conn='/ as sysdba'
+        
+        select sysdate from dual;
+        show user
+        show parameters sga_target
+        ```
+        
+        which produces below output cell:
+        
+        <div style="width: 100%;">
+            <img src="readme_svg/pbrun_sqlplus_output_1.svg" style="width: 100%;" alt="Click to see the source">
+        </div>
 
 
-SQL*Plus: Release 19.0.0.0.0 - Production on Tue Jun 1 22:40:54 2021
-Version 19.10.0.0.0
+    - #### Another option is to set connection parameters once with `nbr.set_nbrshell_env()` 
+        , and then run remote sqlplus commands in multiple cells without command line parameters.
+        Password can be hidden with `getpass` or `stdiomask` module if needed:
 
-Copyright (c) 1982, 2020, Oracle.  All rights reserved.
+        ```python
+        # set nbr environment :
+        nbr.set_nbrshell_env(
+                ssh_conn='username@hostname',
+                ssh_psw='password1',
+                pbrun_user='oracle',
+                oracle_sid='ORCL1',
+                oracle_conn='/ as sysdba'
+        )
+        ```
+        
+        ```python
+        %%pbrun_sqlplus
+        
+        select sysdate from dual;
+        show user
+        ```
 
+        <div style="width: 100%;">
+            <img src="readme_svg/pbrun_sqlplus_output_2.svg" style="width: 100%;" alt="Click to see the source">
+        </div>
 
-Connected to:
-Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
-Version 19.10.0.0.0
+        ```python
+        %%pbrun_sqlplus
+        
+        select 'aaa' from v$instance;
+        show parameters sga_target
+        ```
 
-SQL> 	 select 'aaa' from v$instance;
+        <div style="width: 100%;">
+            <img src="readme_svg/pbrun_sqlplus_output_3.svg" style="width: 100%;" alt="Click to see the source">
+        </div>
 
-'AA
----
-aaa
-
-SQL> Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
-Version 19.10.0.0.0
-```
-
-- #### Alternative syntax to run SQLPLUS commands on a remote server:
-Here we setup sqlplus connection parameters once and then each subsequent cell uses saved parameters, 
-thus requiring less clutter on remaining notebook :
-
-
-Load remote execution function:
-
-```python
-import nbrshell as nbr
-```
-Set sqlplus environment:
-
-```python
-
-nbr.set_sqlplus_env(
-        ssh_conn='user@host',
-        ssh_psw='password',
-        oracle_sid='ORCL',
-        oracle_conn='/ as sysdba'
-)
-```
-Run sql commands in remote sqlplus:
-```sql
-%%pbrun_sqlplus
-
-	alter session set container=<pdb> ;
-    show pdbs
-	...
-	...
-```
-Run more sql commands:
-```sql
-%%pbrun_sqlplus
-
-    select sysdate from dual ;
-	select hostname from v$instance;
-	...
-	...
-
-```

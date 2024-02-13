@@ -31,9 +31,11 @@
 
 import re
 from IPython.core.magic import (register_cell_magic, needs_local_scope)
+from IPython.display import Javascript, display
 
 # import common functions
 from . import nbrshell_common as cmn
+
 
 @register_cell_magic
 def pbrun_sqlplus(line, script):
@@ -45,23 +47,16 @@ def pbrun_sqlplus(line, script):
         It uses paramiko as ssh client with password authentication so that prior key setup is not needed.
         
         Parameter "line", if present, should be in the form of "user@host psw=<ssh_password> oracle_sid=<sid> oracle_conn=<connection string> [debug=True]`" 
-        
-        If "line" not present, then it is assumed that all parameters have been previously set with:
-        
-            nbr.set_sqlplus_env(ssh_conn=<user@host>,
-                                ssh_psw=<ssh_password>,
-                                oracle_sid=<sid>,
-                                oracle_conn=<oracle_conn>)
-                                
+        If "line" not present, then it is assumed that all parameters have been previously set with set_nbrshell_env
         Parameter "debug" is optional.
 
         Usage example 1:
         
             import nbrshell as nbr
-            nbr.set_sqlplus_env(ssh_conn=<user@host>,
+            nbr.set_nbrshell_env(ssh_conn=<user@host>,
                     ssh_psw=<ssh_password>,
                     oracle_sid=<sid>,
-                    oracle_conn=<oracle_conn>
+                    oracle_conn=<oracle_conn>)
             
             %sqlplus
             select * from dual;
@@ -160,6 +155,9 @@ def pbrun_sqlplus(line, script):
         print("======== script-start ============")
         print(cmd)
         print("========= script-end =============")
+   
+    # add html element with id="id_pbrun_sqlplus" for CSS to pick up
+    display( Javascript('element.setAttribute("id", "id_pbrun_sqlplus")') )
 
     # remote execute
     cmn._remote_execute_stream_output(host, user, psw, cmd)

@@ -6,4 +6,5 @@ nbrshell.egg-info/
 add_to_github.log
 add_to_pypi.log
 Readme.html
+README_dropme.rst
 *.bak
