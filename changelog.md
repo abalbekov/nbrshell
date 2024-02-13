@@ -2,6 +2,7 @@
 	- adding pbrun_sqlplus cell magic
 	- ability to set and reuse connection parameters
 	- setting dark output background
+	- moved git root one level down to nbrshell directory
 - v1.0.6 Feb 2024
 	- if standard error was not empty, then logger.error both standard out and standard error
 - v1.0.5 Jan 2023

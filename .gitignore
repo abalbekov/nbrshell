@@ -8,3 +8,6 @@ add_to_pypi.log
 Readme.html
 README_dropme.rst
 *.bak
+nbrshell_common_20230123.py
+nbrshell_common_20240203.py
+how to use paramiko to pbrun shell script on remote server.log
