@@ -93,7 +93,7 @@ echo '\{Curly braces\} need to be escaped to prevent Jupyter variable substituti
 This will stream following shell output in Jupyter output cell :
 
 <div style="width: 100%;">
-    <img src="readme_svg/exec_shell_script_output.svg" style="width: 100%;" alt="Click to see the source">
+    <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/readme_svg/exec_shell_script_output.svg" style="width: 100%;" alt="Click to see the source">
 </div>
 
 The ssh connection parameters can also be set once using `nbr.set_nbrshell_env()` function, in which case it will not be necessary 
@@ -123,7 +123,7 @@ to include them in subsequent cell magic commands, thus allowing cleaner noteboo
         which produces below output cell:
         
         <div style="width: 100%;">
-            <img src="readme_svg/pbrun_sqlplus_output_1.svg" style="width: 100%;" alt="Click to see the source">
+            <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/readme_svg/pbrun_sqlplus_output_1.svg" style="width: 100%;" alt="Click to see the source">
         </div>
 
 
@@ -150,7 +150,7 @@ to include them in subsequent cell magic commands, thus allowing cleaner noteboo
         ```
 
         <div style="width: 100%;">
-            <img src="readme_svg/pbrun_sqlplus_output_2.svg" style="width: 100%;" alt="Click to see the source">
+            <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/readme_svg/pbrun_sqlplus_output_2.svg" style="width: 100%;" alt="Click to see the source">
         </div>
 
         ```python
@@ -161,6 +161,6 @@ to include them in subsequent cell magic commands, thus allowing cleaner noteboo
         ```
 
         <div style="width: 100%;">
-            <img src="readme_svg/pbrun_sqlplus_output_3.svg" style="width: 100%;" alt="Click to see the source">
+            <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/readme_svg/pbrun_sqlplus_output_3.svg" style="width: 100%;" alt="Click to see the source">
         </div>
 
