@@ -20,22 +20,32 @@ _pbrun_user=""
 _oracle_sid=""
 _oracle_conn="/ as sysdba"
 
-
-#def set_sqlplus_env(ssh_conn, ssh_psw, oracle_sid, oracle_conn):
-#    """
-#        Public function to store sqlplus connection info in module variables.
-#        
-#        ssh_conn should have form 'user@host'
-#        oracle_conn should be complete connection sufficient for connection to a db.
-#            Example 1: oracle_conn='/ as sysdba'
-#            Example 2: oracle_conn='user/psw@tnsalias'
-#    """
-#    global _ssh_conn, _psw, _oracle_sid, _oracle_conn
-#    
-#    _ssh_conn=ssh_conn
-#    _psw=ssh_psw
-#    _oracle_sid=oracle_sid
-#    _oracle_conn=oracle_conn
+def _set_output_cell_black_background():
+    """
+        make output cells white text on dark background
+    """
+    from IPython.display import display, HTML
+    display(
+        HTML("""
+            <style>
+                .jp-OutputArea:has(div#id_pbrun_as_oracle)>div>div.jp-OutputArea-output:not(#id_pbrun_as_oracle) {
+                    --jp-content-font-color1: silver;
+                    background-color: #101010;
+                }               
+                .jp-OutputArea:has(div#id_pbrun_sqlplus)>div>div.jp-OutputArea-output:not(#id_pbrun_sqlplus) {
+                    --jp-content-font-color1: silver;
+                    background-color: #101010;
+                }
+                .jp-OutputArea:has(div#id_exec_shell_script)>div>div.jp-OutputArea-output:not(#id_exec_shell_script) {
+                    --jp-content-font-color1: silver;
+                    background-color: #101010;
+                }
+                .jp-OutputArea:has(div#id_pbrun_as)>div>div.jp-OutputArea-output:not(#id_pbrun_as) {
+                    --jp-content-font-color1: silver;
+                    background-color: #101010;
+                }
+            </style>
+            """))
 
 def set_nbrshell_env(ssh_conn, ssh_psw, pbrun_user=None, oracle_sid=None, oracle_conn=None):
     """

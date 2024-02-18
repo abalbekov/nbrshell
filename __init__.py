@@ -28,7 +28,7 @@ Package structure :
     |__ nbrshell_common             |--> common functions and variables
         |__ set_psw                     |--> saves password in memory for use in subsequent executions
         |__ set_sqlplus_env             |--> saves sqlplus environment parameters for use in subsequent executions
-        |__ set_nbr_env                 |--> saves nbr environment parameters for use in subsequent executions
+        |__ set_nbrshell_env            |--> saves nbr environment parameters for use in subsequent executions
 
 """
 

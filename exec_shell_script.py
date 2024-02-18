@@ -105,6 +105,9 @@ def exec_shell_script(line, script):
 
     # add html element with id="id_pbrun_as_oracle" for CSS to pick up
     display( Javascript('element.setAttribute("id", "id_exec_shell_script")') )
-    
+
+    # set black background 
+    cmn._set_output_cell_black_background()
+  
     # remote execute
     cmn._remote_execute_stream_output(host, user, psw, cmd)

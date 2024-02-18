@@ -1,5 +1,5 @@
 # nbrshell
-v1.0.7 Feb 2024
+v1.0.9 Feb 2024
 
 Set of Jupyter Notebook "cell magic" functions to execute remote shell script commands typed in a notebook cell, 
 as if they were typed in a terminal. Shell output is streaming back to the notebook.
@@ -13,7 +13,6 @@ Similarly, there is also Oracle-specific "cell magic" allowing to run sqlplus co
 
 This package uses paramiko library, which is distributed under GNU Lesser General Public License v2.1
 
----
 
 ## Package structure :
 
@@ -43,65 +42,61 @@ This package uses paramiko library, which is distributed under GNU Lesser Genera
         └── set_sqlplus_env           └──> saves sqlplus environment parameters for use in subsequent executions.
         └── set_nbr_env               └──> saves nbr environment parameters for use in subsequent executions.
 
----
 
 ## Usage examples:
 
----
+1. ### To run shell commands on a remote server:
 
-- ### To run shell commands on a remote server:
+	First load remote execution function:
+	
+	```python
+	import nbrshell as nbr
+	
+	# define jupyter python variable:
+	jupyter_var="This is a string defined in Jupyter"
+	```
+	Then execute shell script on a remote server:
+	
+	```shell
+	%%exec_shell_script user@host ssh_psw='password'
+	
+	echo "Running ping :"
+	echo "--------------"
+	ping -s www.oracle.com 56 3
+	
+	echo "Running loop :"
+	echo "--------------"
+	for i in 1 2 3 4 5; do
+		echo $i
+	done
+	
+	echo "Here document :"
+	echo "--------------"
+	cat <<-EOF
+		This is multiline 
+		here document
+	EOF
+	
+	echo "Jupyter variable substitution :"
+	echo "---------------------------"
+	echo {jupyter_var}
+	
+	echo "escaping curly braces :"
+	echo "---------------------------"
+	echo '\{Curly braces\} need to be escaped to prevent Jupyter variable substitution'
+	```
+	
+	This will stream following shell output in Jupyter output cell :
+	
+	<div style="width: 100%;">
+		<img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/readme_svg/exec_shell_script_output.svg" style="width: 100%;" alt="Click to see the source">
+	</div>
+	
+	The ssh connection parameters can also be set once using `nbr.set_nbrshell_env()` function, in which case it will not be necessary 
+	to include them in subsequent cell magic commands, thus allowing cleaner notebook.
 
-First load remote execution function:
 
-```python
-import nbrshell as nbr
-
-# define jupyter python variable:
-jupyter_var="This is a string defined in Jupyter"
-```
-Then execute shell script on a remote server:
-
-```shell
-%%exec_shell_script user@host ssh_psw='password'
-
-echo "Running ping :"
-echo "--------------"
-ping -s www.oracle.com 56 3
-
-echo "Running loop :"
-echo "--------------"
-for i in 1 2 3 4 5; do
-    echo $i
-done
-
-echo "Here document :"
-echo "--------------"
-cat <<-EOF
-    This is multiline 
-    here document
-EOF
-
-echo "Jupyter variable substitution :"
-echo "---------------------------"
-echo {jupyter_var}
-
-echo "escaping curly braces :"
-echo "---------------------------"
-echo '\{Curly braces\} need to be escaped to prevent Jupyter variable substitution'
-```
-
-This will stream following shell output in Jupyter output cell :
-
-<div style="width: 100%;">
-    <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/readme_svg/exec_shell_script_output.svg" style="width: 100%;" alt="Click to see the source">
-</div>
-
-The ssh connection parameters can also be set once using `nbr.set_nbrshell_env()` function, in which case it will not be necessary 
-to include them in subsequent cell magic commands, thus allowing cleaner notebook.
-
----
-
-- ### To run Oracle sqlplus on a remote server
+2. ### To run Oracle sqlplus on a remote server
     - #### One option is to give all connection parameters on cell command line:
 
         First load remote execution function:
@@ -164,3 +159,10 @@ to include them in subsequent cell magic commands, thus allowing cleaner noteboo
             <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/readme_svg/pbrun_sqlplus_output_3.svg" style="width: 100%;" alt="Click to see the source">
         </div>
 
+## Installation:
+
+```python
+python -m pip install nbrshell
+```
+	
+	

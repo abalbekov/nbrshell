@@ -3,6 +3,7 @@ build/
 dist/
 nbrshell.egg-info/
 .git/
+.gitignore
 add_to_github.log
 add_to_pypi.log
 Readme.html

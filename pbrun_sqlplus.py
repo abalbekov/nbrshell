@@ -159,6 +159,9 @@ def pbrun_sqlplus(line, script):
     # add html element with id="id_pbrun_sqlplus" for CSS to pick up
     display( Javascript('element.setAttribute("id", "id_pbrun_sqlplus")') )
 
+    # set black background 
+    cmn._set_output_cell_black_background()
+
     # remote execute
     cmn._remote_execute_stream_output(host, user, psw, cmd)
 
