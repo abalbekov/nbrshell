@@ -88,7 +88,7 @@ This package uses paramiko library, which is distributed under GNU Lesser Genera
 	This will stream following shell output in Jupyter output cell :
 	
 	<div style="width: 100%;">
-		<img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/readme_svg/exec_shell_script_output.svg" style="width: 100%;" alt="Click to see the source">
+		<img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/nbrshell/readme_svg/exec_shell_script_output.svg" style="width: 100%;" alt="Click to see the source">
 	</div>
 	
 	The ssh connection parameters can also be set once using `nbr.set_nbrshell_env()` function, in which case it will not be necessary 
@@ -117,7 +117,7 @@ This package uses paramiko library, which is distributed under GNU Lesser Genera
         which produces below output cell:
         
         <div style="width: 100%;">
-            <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/readme_svg/pbrun_sqlplus_output_1.svg" style="width: 100%;" alt="Click to see the source">
+            <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/nbrshell/readme_svg/pbrun_sqlplus_output_1.svg" style="width: 100%;" alt="Click to see the source">
         </div>
 
 
@@ -144,7 +144,7 @@ This package uses paramiko library, which is distributed under GNU Lesser Genera
         ```
 
         <div style="width: 100%;">
-            <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/readme_svg/pbrun_sqlplus_output_2.svg" style="width: 100%;" alt="Click to see the source">
+            <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/nbrshell/readme_svg/pbrun_sqlplus_output_2.svg" style="width: 100%;" alt="Click to see the source">
         </div>
 
         ```python
@@ -155,13 +155,21 @@ This package uses paramiko library, which is distributed under GNU Lesser Genera
         ```
 
         <div style="width: 100%;">
-            <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/readme_svg/pbrun_sqlplus_output_3.svg" style="width: 100%;" alt="Click to see the source">
+            <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/nbrshell/readme_svg/pbrun_sqlplus_output_3.svg" style="width: 100%;" alt="Click to see the source">
         </div>
 
 ## Installation:
 
+From PyPi:
 ```python
 python -m pip install nbrshell
 ```
+
+or from Github URL:
+```python
+python -m pip install nbrshell@git+https://github.com/abalbekov/nbrshell
+```
+
+
 	
 	

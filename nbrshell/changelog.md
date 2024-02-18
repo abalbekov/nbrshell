@@ -1,6 +1,6 @@
 - v1.0.10 Feb 2024
 	- fixing loosing black background on nbrshell reimport
-	- adding project root with setup.py, to allow pip install from github
+	- allow pip install from github
 	- Readme update
 - v1.0.7 Feb 2024
 	- adding pbrun_sqlplus cell magic
