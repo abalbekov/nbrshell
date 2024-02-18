@@ -27,7 +27,6 @@ Package structure :
 
     |__ nbrshell_common             |--> common functions and variables
         |__ set_psw                     |--> saves password in memory for use in subsequent executions
-        |__ set_sqlplus_env             |--> saves sqlplus environment parameters for use in subsequent executions
         |__ set_nbrshell_env            |--> saves nbr environment parameters for use in subsequent executions
 
 """
@@ -44,33 +43,9 @@ else:
     from .pbrun_as             import pbrun_as
     from .pbrun_as_oracle      import pbrun_as_oracle
     from .exec_shell_script    import exec_shell_script
-    from .nbrshell_common      import set_psw, set_nbrshell_env #, set_sqlplus_env, 
+    from .nbrshell_common      import set_psw, set_nbrshell_env
     from .pbrun_sqlplus        import pbrun_sqlplus
-    
-    # make %%pbrun_as_oracle output cells white text on dark background:
-    from IPython.display import display, HTML
-    display(
-        HTML("""
-            <style>
-                .jp-OutputArea:has(div#id_pbrun_as_oracle)>div>div.jp-OutputArea-output:not(#id_pbrun_as_oracle) {
-                    --jp-content-font-color1: silver;
-                    background-color: #101010;
-                }               
-                .jp-OutputArea:has(div#id_pbrun_sqlplus)>div>div.jp-OutputArea-output:not(#id_pbrun_sqlplus) {
-                    --jp-content-font-color1: silver;
-                    background-color: #101010;
-                }
-                .jp-OutputArea:has(div#id_exec_shell_script)>div>div.jp-OutputArea-output:not(#id_exec_shell_script) {
-                    --jp-content-font-color1: silver;
-                    background-color: #101010;
-                }
-                .jp-OutputArea:has(div#id_pbrun_as)>div>div.jp-OutputArea-output:not(#id_pbrun_as) {
-                    --jp-content-font-color1: silver;
-                    background-color: #101010;
-                }
-            </style>
-            """))
-    
+       
 from .pbrun_as_fn          import pbrun_as_fn
 from .pbrun_as_oracle_fn   import pbrun_as_oracle_fn
 from .exec_shell_script_fn import exec_shell_script_fn

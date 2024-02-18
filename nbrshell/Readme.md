@@ -1,5 +1,5 @@
 # nbrshell
-v1.0.9 Feb 2024
+v1.0.10 Feb 2024
 
 Set of Jupyter Notebook "cell magic" functions to execute remote shell script commands typed in a notebook cell, 
 as if they were typed in a terminal. Shell output is streaming back to the notebook.
@@ -39,8 +39,7 @@ This package uses paramiko library, which is distributed under GNU Lesser Genera
                                     
     └── nbrshell_common          │──> common functions and variables.
         └── set_psw                   └──> sets password in memory for use in subsequent cell executions.
-        └── set_sqlplus_env           └──> saves sqlplus environment parameters for use in subsequent executions.
-        └── set_nbr_env               └──> saves nbr environment parameters for use in subsequent executions.
+        └── set_nbrshell_env          └──> saves nbr environment parameters for use in subsequent executions.
 
 
 ## Usage examples:
