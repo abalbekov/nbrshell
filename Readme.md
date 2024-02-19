@@ -1,15 +1,16 @@
 # nbrshell - Notebook Remote Shell
 v1.0.10 Feb 2024
 
-Set of Jupyter Notebook "cell magic" functions to execute remote shell script commands typed in a notebook cell, 
-as if they were typed in a terminal. Shell output is streaming back to the notebook.
+Set of Jupyter Notebook "cell magic" functions to execute remote shell script typed in a notebook cell, 
+with shell script output streaming back to the notebook.
 
-This makes it possible to create a notebook with shell constructs in code cells, shell output in output cells, and freeform text in markdown cells, 
-making this a good solution for documentation purposes as well as a templating solution for repetitive executions.
+This makes it possible to write a notebook with freeform text in markdown cells and shell constructs in code cells, 
+producing shell script output in output cells. This makes this a good solution for documentation purposes, prototyping, 
+teaching, demoing and explaining working with unix shell, as well as templating solution for repetitive script executions.
 
 Each "cell magic" has a non-magic equivalent function with name ending with "_fn".
 
-Similarly, there is also Oracle-specific "cell magic" allowing to run sqlplus commands in a remote sqlplus. 
+Similarly, there is also Oracle database-specific "cell magic" allowing to run sqlplus commands in a remote sqlplus. 
 
 This package uses paramiko library, which is distributed under GNU Lesser General Public License v2.1
 
@@ -19,7 +20,7 @@ This package uses paramiko library, which is distributed under GNU Lesser Genera
     ├── pbrun_as_oracle          │──> connects via paramiko ssh client with a password (no prior ssh 
     ├── pbrun_as_oracle_fn       │    keys setup is needed), then executes pbrun to switch to oracle account,
                                  │    then sets oracle environment according to provided "oracle_sid"
-                                 │    and runs provided shell commands.
+                                 │    and runs provided shell commands as oracle user.
 
     ├── pbrun_as                 │──> connects via paramiko ssh client with password (no prior ssh 
     ├── pbrun_as_fn              │    keys setup is needed), then executes pbrun to switch to another user,
@@ -46,7 +47,7 @@ This package uses paramiko library, which is distributed under GNU Lesser Genera
 
 1. ### To run shell commands on a remote server:
 
-	First load remote execution function:
+	First load remote execution package:
 	
 	```python
 	import nbrshell as nbr
@@ -92,7 +93,7 @@ This package uses paramiko library, which is distributed under GNU Lesser Genera
 	</div>
 	
 	The ssh connection parameters can also be set once using `nbr.set_nbrshell_env()` function, in which case it will not be necessary 
-	to include them in subsequent cell magic commands, thus allowing cleaner notebook.
+	to include them in subsequent cell magic commands, thus allowing for less cluttered notebook.
 
 
 2. ### To run Oracle sqlplus on a remote server
@@ -121,8 +122,8 @@ This package uses paramiko library, which is distributed under GNU Lesser Genera
         </div>
 
 
-    - #### Another option is to set connection parameters once with `nbr.set_nbrshell_env()` 
-        , and then run remote sqlplus commands in multiple cells without command line parameters.
+    - #### Another option is to set connection parameters once with `nbr.set_nbrshell_env()`,
+        and then run remote sqlplus commands in multiple cells without command line parameters.
         Password can be hidden with `getpass` or `stdiomask` module if needed:
 
         ```python
