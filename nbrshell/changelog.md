@@ -1,3 +1,5 @@
+- v1.0.11 Feb 2024
+	- fixing ORATAB parsing to avoid lines commented out
 - v1.0.10 Feb 2024
 	- fixing loosing black background on nbrshell reimport
 	- allow pip install from github
