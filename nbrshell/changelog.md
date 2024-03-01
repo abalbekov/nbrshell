@@ -1,16 +1,24 @@
+- v1.0.12 Feb 2024
+	- pbrun_as_oracle: if oracle_sid not passed as parameter, then take it from previously saved with set_nbrshell_env
+	- nbrshell_common: prevent grep from parsing minus sign in ORACLE_SID, to allow -MGMTDB sid.
+	
 - v1.0.11 Feb 2024
 	- fixing ORATAB parsing to avoid lines commented out
+	
 - v1.0.10 Feb 2024
 	- fixing loosing black background on nbrshell reimport
 	- allow pip install from github
 	- Readme update
+	
 - v1.0.7 Feb 2024
 	- adding pbrun_sqlplus cell magic
 	- ability to set and reuse connection parameters
 	- setting dark output background
 	- moved git root one level down to nbrshell directory
+	
 - v1.0.6 Feb 2024
 	- if standard error was not empty, then logger.error both standard out and standard error
+	
 - v1.0.5 Jan 2023
 	- catch all exceptions in paramiko in ssh.connect and ssh.exec_command and print to logger
 	

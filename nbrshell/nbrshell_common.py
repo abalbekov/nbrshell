@@ -167,7 +167,7 @@ def _add_oracle_env_variables(script, oracle_sid):
               f'elif [[ "`uname -s`" == "SunOS" ]]\n'
               f"  then ORATAB=/var/opt/oracle/oratab\n"
               f"fi\n"
-              f"export ORACLE_HOME=`cat $ORATAB | egrep -v '^#' | grep $ORACLE_SID | cut -d: -f2 | head -1`\n"
+              f"export ORACLE_HOME=`cat $ORATAB | egrep -v '^#' | grep -- $ORACLE_SID | cut -d: -f2 | head -1`\n"
               f"export ORACLE_BASE=`echo $ORACLE_HOME | sed 's@/product.*$@@'`\n"
               f"PATH=$ORACLE_HOME/bin:$PATH\n"
              f"{script}")

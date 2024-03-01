@@ -90,6 +90,11 @@ def pbrun_as_oracle(line, script):
        
     # if oracle_sid was not passed then set it to "dummy_sid"
     oracle_sid = kwargs.get('oracle_sid', "dummy_sid")
+    if oracle_sid =="dummy_sid":
+        if cmn._oracle_sid:
+            oracle_sid=cmn._oracle_sid
+        else:
+            raise Exception('Error! oracle_sid is not given.')    
     
     # debug default is False
     debug = kwargs.get('debug', False)
