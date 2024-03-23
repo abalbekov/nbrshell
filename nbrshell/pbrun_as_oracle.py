@@ -53,7 +53,7 @@ def pbrun_as_oracle(line, script):
         This is a cell magic function 
         to execute cell content as a bash script on a remote host 
         after becoming oracle with pbrun and setting some common Oracle environment variables 
-        (ORACLE_SID, ORACLE_HOME, PATH).
+        (ORACLE_SID, ORACLE_HOME, PATH, LD_LIBRARY_PATH).
         
         It uses paramiko as ssh client with password authentication so that prior key setup is not needed.
         
@@ -93,8 +93,8 @@ def pbrun_as_oracle(line, script):
     if oracle_sid =="dummy_sid":
         if cmn._oracle_sid:
             oracle_sid=cmn._oracle_sid
-        else:
-            raise Exception('Error! oracle_sid is not given.')    
+        #else:
+        #    raise Exception('Error! oracle_sid is not given.')    
     
     # debug default is False
     debug = kwargs.get('debug', False)

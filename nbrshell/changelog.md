@@ -1,3 +1,7 @@
+- v1.0.13 Feb 2024
+	- nbrshell_common: export LD_LIBRARY_PATH. This helps ggsci.
+	- pbrun_as_oracle: Do not raise exception when oracle_sid is not passed. Set it to "dummy_sid"
+
 - v1.0.12 Feb 2024
 	- pbrun_as_oracle: if oracle_sid not passed as parameter, then take it from previously saved with set_nbrshell_env
 	- nbrshell_common: prevent grep from parsing minus sign in ORACLE_SID, to allow -MGMTDB sid.
