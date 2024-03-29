@@ -8,7 +8,7 @@ long_description = (this_directory / "Readme.md").read_text(encoding='utf-8')
 
 setup(
     name="nbrshell",
-    version="1.0.13",
+    version="1.0.14",
     description='Jupyter Notebook "cell magic" functions to remotely execute shell script typed in a notebook cell.',
     long_description=long_description,
     long_description_content_type='text/markdown',
