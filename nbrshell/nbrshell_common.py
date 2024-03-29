@@ -27,23 +27,12 @@ def _set_output_cell_black_background():
     from IPython.display import display, HTML
     display(
         HTML("""
+            <div id='id_nbrshell'></div>
             <style>
-                .jp-OutputArea:has(div#id_pbrun_as_oracle)>div>div.jp-OutputArea-output:not(#id_pbrun_as_oracle) {
+                .jp-OutputArea:has(div#id_nbrshell)>div>div.jp-OutputArea-output:not(#id_nbrshell) {
                     --jp-content-font-color1: silver;
                     background-color: #101010;
                 }               
-                .jp-OutputArea:has(div#id_pbrun_sqlplus)>div>div.jp-OutputArea-output:not(#id_pbrun_sqlplus) {
-                    --jp-content-font-color1: silver;
-                    background-color: #101010;
-                }
-                .jp-OutputArea:has(div#id_exec_shell_script)>div>div.jp-OutputArea-output:not(#id_exec_shell_script) {
-                    --jp-content-font-color1: silver;
-                    background-color: #101010;
-                }
-                .jp-OutputArea:has(div#id_pbrun_as)>div>div.jp-OutputArea-output:not(#id_pbrun_as) {
-                    --jp-content-font-color1: silver;
-                    background-color: #101010;
-                }
             </style>
             """))
 

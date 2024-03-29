@@ -157,7 +157,7 @@ def pbrun_sqlplus(line, script):
         print("========= script-end =============")
    
     # add html element with id="id_pbrun_sqlplus" for CSS to pick up
-    display( Javascript('element.setAttribute("id", "id_pbrun_sqlplus")') )
+    #display( Javascript('element.setAttribute("id", "id_pbrun_sqlplus")') )
 
     # set black background 
     cmn._set_output_cell_black_background()

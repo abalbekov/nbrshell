@@ -1,3 +1,8 @@
+- v1.0.14 Mar 2024
+	- use pure css to set black output cell background in generated html, instead of javascript.
+	  This helps with rendering html files uploaded to 3rd party renderers such as sharepoint, 
+	  who sanitize javascript in user uploaded html files.
+	
 - v1.0.13 Feb 2024
 	- nbrshell_common: export LD_LIBRARY_PATH. This helps ggsci.
 	- pbrun_as_oracle: Do not raise exception when oracle_sid is not passed. Set it to "dummy_sid"

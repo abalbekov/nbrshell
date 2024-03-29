@@ -29,7 +29,7 @@
 #
 
 from IPython.core.magic import (register_cell_magic, needs_local_scope)
-from IPython.display import Javascript, display 
+from IPython.display import Javascript, display, HTML
 
 # import common functions
 from . import nbrshell_common as cmn
@@ -104,7 +104,9 @@ def exec_shell_script(line, script):
         print("========= script-end =============")
 
     # add html element with id="id_pbrun_as_oracle" for CSS to pick up
-    display( Javascript('element.setAttribute("id", "id_exec_shell_script")') )
+    #display( Javascript('element.setAttribute("id", "id_exec_shell_script")') )
+    #display( HTML("<div id='id_exec_shell_script'></div>"))
+    
 
     # set black background 
     cmn._set_output_cell_black_background()

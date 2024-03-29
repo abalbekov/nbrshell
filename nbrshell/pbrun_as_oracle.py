@@ -134,7 +134,7 @@ def pbrun_as_oracle(line, script):
         print("========= script-end =============")
 
     # add html element with id="id_pbrun_as_oracle" for CSS to pick up
-    display( Javascript('element.setAttribute("id", "id_pbrun_as_oracle")') )
+    #display( Javascript('element.setAttribute("id", "id_pbrun_as_oracle")') )
 
     # set black background 
     cmn._set_output_cell_black_background()
