@@ -47,54 +47,73 @@ This package uses paramiko library, which is distributed under GNU Lesser Genera
 
 1. ### To run shell commands on a remote server:
 
-	First load remote execution package:
-	
-	```python
-	import nbrshell as nbr
-	
-	# define jupyter python variable:
-	jupyter_var="This is a string defined in Jupyter"
-	```
-	Then execute shell script on a remote server:
-	
-	```shell
-	%%exec_shell_script user@host ssh_psw='password'
-	
-	echo "Running ping :"
-	echo "--------------"
-	ping -s www.oracle.com 56 3
-	
-	echo "Running loop :"
-	echo "--------------"
-	for i in 1 2 3 4 5; do
-		echo $i
-	done
-	
-	echo "Here document :"
-	echo "--------------"
-	cat <<-EOF
-		This is multiline 
-		here document
-	EOF
-	
-	echo "Jupyter variable substitution :"
-	echo "---------------------------"
-	echo {jupyter_var}
-	
-	echo "escaping curly braces :"
-	echo "---------------------------"
-	echo '\{Curly braces\} need to be escaped to prevent Jupyter variable substitution'
-	```
-	
-	This will stream following shell output in Jupyter output cell :
-	
-	<div style="width: 100%;">
-		<img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/nbrshell/readme_svg/exec_shell_script_output.svg" style="width: 100%;" alt="Click to see the source">
-	</div>
-	
-	The ssh connection parameters can also be set once using `nbr.set_nbrshell_env()` function, in which case it will not be necessary 
-	to include them in subsequent cell magic commands, thus allowing for less cluttered notebook.
+    First load remote execution package:
+    
+    ```python
+    import nbrshell as nbr
+    
+    # define a python variable global to the notebook:
+    jupyter_var="This is a string defined in Jupyter"
+    ```
+    Then execute shell script on a remote server:
+    
+    ```shell
+    %%exec_shell_script user@host ssh_psw='password'
+    
+    echo "Running ping :"
+    echo "--------------"
+    ping -s www.oracle.com 56 3
+    
+    echo "Running loop :"
+    echo "--------------"
+    for i in 1 2 3 4 5; do
+        echo $i
+    done
+    
+    echo "Here document :"
+    echo "--------------"
+    cat <<-EOF
+        This is multiline 
+        here document
+    EOF
+    
+    echo "Jupyter variable substitution :"
+    echo "---------------------------"
+    echo {jupyter_var}
+    
+    echo "escaping curly braces :"
+    echo "---------------------------"
+    echo '\{Curly braces\} need to be escaped to prevent Jupyter variable substitution'
+    ```
+    
+    This will stream following shell output in Jupyter output cell :
+    
+    <div style="width: 100%;">
+        <img src="https://raw.githubusercontent.com/abalbekov/nbrshell/main/nbrshell/readme_svg/exec_shell_script_output.svg" style="width: 100%;" alt="Click to see the source">
+    </div>
+    
+    The ssh connection parameters can also be set once using `nbr.set_nbrshell_env()` function, in which case it will not be necessary 
+    to include them in subsequent cell magic commands, thus allowing for less cluttered notebook.
 
+    Instead of specifying ssh password on each cell, it can be set once, and then used in subsequent cells:
+
+    Set ssh password:
+
+    ```python
+    import nbrshell as nbr
+    import getpass
+
+    PSW=getpass.getpass()
+    nbr.set_psw(PSW)
+    ```
+
+    Use ssh password in subsequent cells:
+    
+    ```python
+    %%exec_shell_script user@host
+    
+    id
+    ``` 
 
 2. ### To run Oracle sqlplus on a remote server
     - #### One option is to give all connection parameters on cell command line:
@@ -181,7 +200,7 @@ To fix this issue, you can add following rules to Jupyter custom.css file:
 /* nbrshell output cell styles */
 
 .jp-OutputArea:has(div[data-jupyter-id="id_nbrshell"])>div>div.jp-OutputArea-output:not(#id_nbrshell) {
-	--jp-content-font-color1: silver;
+    --jp-content-font-color1: silver;
     background-color: #101010;
 }
 
@@ -190,5 +209,5 @@ div.jp-OutputArea-output>pre {
 }
 ```
 
-	
-	
+    
+    
