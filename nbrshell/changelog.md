@@ -1,7 +1,11 @@
+- v1.0.15 May 2026
+	- documented workaround to nbrshell output cells losing black background on notebook reopen. 
+	- added pbrun_sqlcl draft.
+	
 - v1.0.14 Mar 2024
 	- use pure css to set black output cell background in generated html, instead of javascript.
-	  This helps with rendering html files uploaded to 3rd party renderers such as sharepoint, 
-	  who sanitize javascript in user uploaded html files.
+	  This helps with rendering html files uploaded to 3rd party renderers
+	  which sanitize javascript in user uploaded html files, such as sharepoint.
 	
 - v1.0.13 Feb 2024
 	- nbrshell_common: export LD_LIBRARY_PATH. This helps ggsci.
@@ -15,7 +19,7 @@
 	- fixing ORATAB parsing to avoid lines commented out
 	
 - v1.0.10 Feb 2024
-	- fixing loosing black background on nbrshell reimport
+	- fixing losing black background on nbrshell reimport
 	- allow pip install from github
 	- Readme update
 	

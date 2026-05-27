@@ -5,7 +5,7 @@
 
 import re
 
-from subprocess import Popen, PIPE, STDOUT
+#from subprocess import Popen, PIPE, STDOUT
 
 import paramiko
 from socket import gaierror
@@ -23,6 +23,7 @@ _oracle_conn="/ as sysdba"
 def _set_output_cell_black_background():
     """
         make output cells white text on dark background
+        make output cells horizontally scrollable 
     """
     from IPython.display import display, HTML
     display(
@@ -32,7 +33,10 @@ def _set_output_cell_black_background():
                 .jp-OutputArea:has(div#id_nbrshell)>div>div.jp-OutputArea-output:not(#id_nbrshell) {
                     --jp-content-font-color1: silver;
                     background-color: #101010;
-                }               
+                }
+                div.jp-OutputArea-output>pre {
+                    white-space: pre;
+                }
             </style>
             """))
 
@@ -210,7 +214,7 @@ def _remote_execute_stream_output(host, user, psw, cmd):
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
     try:
-        ssh.connect(host, 22, user, psw)
+        ssh.connect(host, 2722, user, psw)
     #except (paramiko.SSHException, gaierror, TimeoutError, paramiko.ssh_exception.NoValidConnectionsError) as e:
     except Exception as e:
         logger.error(f"AuthenticationException: {e}")
@@ -243,7 +247,9 @@ def _remote_execute_stream_output(host, user, psw, cmd):
     errlines=stderr.readlines()
     # remove two unexplainable errors 
     err=''.join([l for l in errlines if 'shell-init: error retrieving current directory' not in l
-                                             and 'Command caught signal 15 (Terminated)' not in l])
+                                             and 'Command caught signal 15 (Terminated)' not in l
+                                             and 'Cannot access sharedlibsolarisprojects /usr/lib/libproject.so.1' not in l
+                                             and 'log event ack failure' not in l])
     print(err, flush=True)
     
     ssh.close()
@@ -260,37 +266,43 @@ def _remote_execute_fn (host, user, psw, cmd, stderr_after_stdout=False):
     except Exception as e:
         logger.error(f"AuthenticationException: {e}")
         ssh.close()
-        return f"AuthenticationException: {e}"
+        return "", f"AuthenticationException: {e}"
     #
     # execute remote_script
     #
     try:
         stdin, stdout, stderr = ssh.exec_command(cmd)
     except Exception as e:
-        logger.error(f"Error in ssh.exec_command ! {e}")       
+        logger.error(f"Error in ssh.exec_command ! {e}") 
+        return "", f"Error in ssh.exec_command ! {e}"
 
     outlines=stdout.readlines()
     out=''.join(outlines)
     logger.debug(out)
     
     errlines=stderr.readlines()
-    # remove three unexplainable errors 
-    err=''.join([l for l in errlines if 'shell-init: error retrieving current directory' not in l
-                                             and 'Command caught signal 15 (Terminated)' not in l
-                                             and 'Cannot access sharedlibsolarisprojects /usr/lib/libproject.so.1' not in l
-                                             ])
-    #err=''.join([l for l in errlines ])
+    ## remove three unexplainable errors 
+    #err=''.join([l for l in errlines if 'shell-init: error retrieving current directory' not in l
+    #                                         and 'Command caught signal 15 (Terminated)' not in l
+    #                                         and 'Cannot access sharedlibsolarisprojects /usr/lib/libproject.so.1' not in l
+    #                                         and 'log event ack failure' not in l
+    #                                         ])
+    err=''.join([l for l in errlines ])
+    
     ssh.close()
     
-    #if err and not stderr_after_stdout:
-    if err:
-        logger.error(out+err)
-    
-    if stderr_after_stdout:
-        # append stderr after stdout
-        return out+err
-    else:
-        return out
+    #### #if err and not stderr_after_stdout:
+    #### if err:
+    ####     #logger.error(out+err)
+    ####     logger.error(err)
+    #### 
+    #### if stderr_after_stdout:
+    ####     # append stderr after stdout
+    ####     return out+err
+    #### else:
+    ####     return out
+
+    return out, err
 
     # below if we want to stream output via returned generator
     # (but see how streaming is done in _remote_execute_stream_output, as it uses sleep to save on CPU)

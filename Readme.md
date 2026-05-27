@@ -171,6 +171,24 @@ or from Github URL:
 python -m pip install nbrshell@git+https://github.com/abalbekov/nbrshell
 ```
 
+## Adding custom.css rules:
+
+There is a known issue where on the notebook reopen the nbrshell output cells lose black background. 
+This happens because, as a security measure, Jupyter strips out custom CSS when saving notebooks.  
+To fix this issue, you can add following rules to Jupyter custom.css file:
+
+```css
+/* nbrshell output cell styles */
+
+.jp-OutputArea:has(div[data-jupyter-id="id_nbrshell"])>div>div.jp-OutputArea-output:not(#id_nbrshell) {
+	--jp-content-font-color1: silver;
+    background-color: #101010;
+}
+
+div.jp-OutputArea-output>pre {
+    white-space: pre;
+}
+```
 
 	
 	
