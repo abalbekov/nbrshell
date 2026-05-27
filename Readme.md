@@ -1,5 +1,5 @@
 # nbrshell - Notebook Remote Shell
-v1.0.14 Mar 2024
+v1.0.15 May 2026
 
 Set of Jupyter Notebook "cell magic" functions to execute remote shell script typed in a notebook cell, 
 with shell script output streaming back to the notebook.

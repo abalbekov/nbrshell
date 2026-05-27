@@ -214,7 +214,7 @@ def _remote_execute_stream_output(host, user, psw, cmd):
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
     try:
-        ssh.connect(host, 2722, user, psw)
+        ssh.connect(host, 22, user, psw)
     #except (paramiko.SSHException, gaierror, TimeoutError, paramiko.ssh_exception.NoValidConnectionsError) as e:
     except Exception as e:
         logger.error(f"AuthenticationException: {e}")
